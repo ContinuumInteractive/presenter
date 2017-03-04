@@ -1,5 +1,5 @@
 {
-    "name": "dbonner1987/depot",
+    "name": "dbonner/depot",
     "description": "A Laravel Repository, Criteria and Presenter package.",
     "type": "library",
     "require": {
