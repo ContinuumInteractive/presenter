@@ -18,7 +18,7 @@ class DepotServiceProvider extends ServiceProvider
             __DIR__.'/../config/depot.php' => config_path('depot.php'),
         ]);
 
-        PresentationDecorator::registerPresenters($this->app['config']->get('depot.presenters'));
+        PresentationDecorator::registerPresenters($this->app['config']->get('depot.presenters', []));
     }
 
     /**
