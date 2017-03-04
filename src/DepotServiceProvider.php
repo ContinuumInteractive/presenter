@@ -5,7 +5,7 @@ namespace DBonner\Depot;
 use Illuminate\Support\ServiceProvider;
 use DBonner\Depot\Presentation\PresentationDecorator;
 
-class PresenterServiceProvider extends ServiceProvider
+class DepotServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
