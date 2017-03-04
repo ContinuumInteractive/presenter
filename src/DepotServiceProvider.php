@@ -15,7 +15,7 @@ class DepotServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/depot.php' => config_path('depot.php'),
+            __DIR__.'/config/depot.php' => config_path('depot.php'),
         ]);
 
         PresentationDecorator::registerPresenters($this->app['config']->get('depot.presenters', []));
