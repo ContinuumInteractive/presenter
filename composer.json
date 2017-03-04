@@ -11,6 +11,11 @@
         "phpunit/phpunit": "~5.7",
         "mockery/mockery": "~0.9.4"
     },
+    "autoload": {
+        "psr-4": {
+            "DBonner\\Depot\\": "src/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
