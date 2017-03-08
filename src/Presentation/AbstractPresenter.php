@@ -34,6 +34,17 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
     public function __construct(Presentable $object)
     {
         $this->object = $object;
+        $this->bootPresenter();
+    }
+
+    /**
+     * Boot the presenter.
+     *
+     * @return void
+     */
+    protected function bootPresenter()
+    {
+        // Override this method within your presenter.
     }
 
     /**
