@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use DBonner\Depot\Presentation\DecoratesEntities;
 use DBonner\Depot\Repositories\RepositoryCriteria;
 
-class EloquentAbstractRepository
+class AbstractRepository
 {
     use DecoratesEntities;
 
