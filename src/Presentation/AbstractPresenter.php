@@ -185,4 +185,22 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
             return [$keyName => $this->object->{$keyName}];
         })->toArray();
     }
+
+    /**
+     * Is the decorated entity available.
+     *
+     * When dealing with relationships in models, we only want to deal with their
+     * presented objects within other presenters.
+     *
+     * @param  string $key
+     * @return boolean
+     */
+    protected function decoratedRelationLoaded($key)
+    {
+        if ($this->object->relationLoaded($key)) {
+            return ($this->object->getRelation($key) instanceof self);
+        }
+
+        return false;
+    }
 }
