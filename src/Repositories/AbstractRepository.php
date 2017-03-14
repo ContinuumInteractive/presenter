@@ -21,6 +21,16 @@ class AbstractRepository
     protected $criteria = [];
 
     /**
+     * @var boolean
+     */
+    protected $withCommon = false;
+
+    /**
+     * @var array
+     */
+    protected $with = [];
+
+    /**
      * @var integer
      */
     protected $count = 15;
@@ -53,12 +63,49 @@ class AbstractRepository
     }
 
     /**
+     * Add a with clause to the query.
+     *
+     * @param  string|array $relationships
+     * @return DBonner\Depot\Repositories\AbstractRepository
+     */
+    public function with($relationships)
+    {
+        if (!is_array($relationships)) {
+            $relationships = (array) $relationships;
+        }
+
+        $this->with = array_merge($this->with, $relationships);
+        return $this;
+    }
+
+    /**
+     * Add a with clause to the query using the common relatiopnships defined
+     * in the extending repository.
+     *
+     * @return DBonner\Depot\Repositories\AbstractRepository
+     */
+    public function withCommon()
+    {
+        if (method_exists($this, 'commonRelationships')) {
+            $this->with((array) $this->commonRelationships());
+        }
+
+        return $this;
+    }
+
+    /**
      * Return the current query instance.
      *
      * @return Illuminate\Database\Eloquent\Builder
      */
     protected function query()
     {
-        return $this->model->query();
+        $m = $this->model->query();
+
+        if (!empty($this->with)) {
+            $m->with($this->with);
+        }
+
+        return $m;
     }
 }
