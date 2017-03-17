@@ -4,6 +4,7 @@ namespace DBonner\Depot\Presentation;
 
 use ArrayAccess;
 use BadMethodCallException;
+use Illuminate\Database\Eloquent\Model;
 use DBonner\Depot\Presentation\Presentable;
 use Illuminate\Contracts\Support\Arrayable;
 use DBonner\Depot\Presentation\PresenterException;
@@ -44,6 +45,14 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
      */
     protected function bootPresenter()
     {
+        if ($this->object instanceof Model) {
+            collect($this->object->getRelations())->filter(function ($relation) {
+                return ($relation instanceof self);
+            })->each(function ($relation, $key) {
+                $this->{$key} = $relation;
+            });
+        }
+
         // Override this method within your presenter.
     }
 
@@ -75,9 +84,14 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
     {
         if (method_exists($this, $key)) {
             return $this->{$key}();
-        } elseif (method_exists($this, camel_case($key))) {
-            return $this->{camel_case($key)}();
         }
+
+        $method = camel_case($key);
+        if (method_exists($this, $method)) {
+            return $this->{$method}();
+        }
+
+        // if (isset($this->))
 
         return $this->getObjectAttribute($key);
     }
@@ -174,16 +188,16 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
     public function toArray()
     {
         if (method_exists($this, 'presentArray')) {
-            return $this->presentArray();
+            $array = $this->presentArray();
+        } elseif ($this->object instanceof Arrayable) {
+            $array = $this->object->toArray();
+        } else {
+            $array = collect($this->object->getPresentableKeys())->mapWithKeys(function ($keyName, $key) {
+                return [$keyName => $this->object->{$keyName}];
+            })->toArray();
         }
 
-        if ($this->object instanceof Arrayable) {
-            return $this->object->toArray();
-        }
-
-        return collect($this->object->getPresentableKeys())->mapWithKeys(function ($keyName, $key) {
-            return [$keyName => $this->object->{$keyName}];
-        })->toArray();
+        return $array;
     }
 
     /**
