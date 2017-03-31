@@ -15,7 +15,7 @@ class RepositoryCriteria extends Collection
      * @param array $items
      * @param Illuminate\Http\Request $request
      */
-    public function __construct($items = [], Request $request = null)
+    public function __construct(Request $request = null, $items = [])
     {
         parent::__construct($items);
         $this->bootCriteria($request);
