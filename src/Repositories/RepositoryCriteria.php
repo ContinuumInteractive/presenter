@@ -34,6 +34,8 @@ class RepositoryCriteria extends Collection
                 resolve($c)->apply($query);
             } elseif ($c instanceof Criterion) {
                 $c->apply($query);
+            } elseif (is_callable($c)) {
+                $c($query);
             }
         });
 
