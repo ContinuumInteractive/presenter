@@ -39,6 +39,16 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
     }
 
     /**
+     * Return the raw presentable object.
+     *
+     * @return DBonner\Depot\Presentation\Presentable
+     */
+    public function getPresentableObject()
+    {
+        return $this->object;
+    }
+
+    /**
      * Boot the presenter.
      *
      * @return void
