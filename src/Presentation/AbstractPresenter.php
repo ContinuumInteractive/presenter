@@ -136,6 +136,10 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
      */
     public function __call($method, array $parameters)
     {
+        if (property_exists($this, $method) && is_object($this->{$method}) && count($parameters) === 1) {
+            return $this->{$method}->{$parameters[0]};
+        }
+
         if (is_object($this->object) && method_exists($this->object, $method)) {
             return call_user_func_array([$this->object, $method], $parameters);
         }
