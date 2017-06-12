@@ -186,4 +186,15 @@ class BasePresenter implements ArrayAccess, Arrayable, Jsonable
     {
         return json_encode($this->toArray(), $options);
     }
+
+    /**
+     * Return a new instance of the presenter.
+     *
+     * @param  Continuum\Presenter\Presentable $object
+     * @return self
+     */
+    public static function make(Presentable $object)
+    {
+        return (new static)->setPresentableObject($object);
+    }
 }
