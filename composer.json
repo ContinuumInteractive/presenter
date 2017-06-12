@@ -1,11 +1,11 @@
 {
-    "name": "dbonner/depot",
-    "description": "A Laravel Repository, Criteria and Presenter package.",
+    "name": "continuum/presenter",
+    "description": "A Laravel presenter package.",
     "type": "library",
     "require": {
+        "php" : "^7.0",
         "illuminate/contracts": "^5.4",
-        "illuminate/support": "^5.4",
-        "illuminate/database": "^5.4"
+        "illuminate/support": "^5.4"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.7",
@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "DBonner\\Depot\\": "src/"
+            "Continuum\\Presenter\\": "src/"
         }
     },
     "license": "MIT",

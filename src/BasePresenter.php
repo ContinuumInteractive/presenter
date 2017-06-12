@@ -1,51 +1,35 @@
 <?php
 
-namespace DBonner\Depot\Presentation;
+namespace Continuum\Presenter;
 
 use ArrayAccess;
 use BadMethodCallException;
+use Continuum\Presenter\Presentable;
 use Illuminate\Database\Eloquent\Model;
-use DBonner\Depot\Presentation\Presentable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
-use DBonner\Depot\Presentation\PresenterException;
 
-/**
- * The AbstractPresenter is influenced by https://github.com/jasonlewis/presenter.
- *
- * Unfortunately the package above didn't meet our exact needs so a new fork
- * was required.
- */
-
-abstract class AbstractPresenter implements ArrayAccess, Arrayable
+class BasePresenter implements ArrayAccess, Arrayable, Jsonable
 {
     /**
      * The object being decorated.
      *
-     * @var object
+     * @var Continuum\Presenter\Presentable
      */
     protected $object;
 
     /**
-     * Create a new presenter instance.
+     * Return the raw presentable object.
      *
-     * @param object $object
-     *
-     * @return void
+     * @param Continuum\Presenter\Presentable $object
+     * @return Continuum\Presenter\BasePresenter
      */
-    public function __construct(Presentable $object)
+    public function setPresentableObject(Presentable $object)
     {
         $this->object = $object;
         $this->bootPresenter();
-    }
 
-    /**
-     * Return the raw presentable object.
-     *
-     * @return DBonner\Depot\Presentation\Presentable
-     */
-    public function getPresentableObject()
-    {
-        return $this->object;
+        return $this;
     }
 
     /**
@@ -55,22 +39,13 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
      */
     protected function bootPresenter()
     {
-        if ($this->object instanceof Model) {
-            collect($this->object->getRelations())->filter(function ($relation) {
-                return ($relation instanceof self);
-            })->each(function ($relation, $key) {
-                $this->{$key} = $relation;
-            });
-        }
-
-        // Override this method within your presenter.
+        //
     }
 
     /**
      * Get an attribute from the wrapped object.
      *
      * @param string $key
-     *
      * @return mixed
      */
     public function getObjectAttribute($key)
@@ -96,12 +71,9 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
             return $this->{$key}();
         }
 
-        $method = camel_case($key);
-        if (method_exists($this, $method)) {
+        if (method_exists($this, $method = camel_case($key))) {
             return $this->{$method}();
         }
-
-        // if (isset($this->))
 
         return $this->getObjectAttribute($key);
     }
@@ -199,36 +171,19 @@ abstract class AbstractPresenter implements ArrayAccess, Arrayable
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-        if (method_exists($this, 'presentArray')) {
-            $array = $this->presentArray();
-        } elseif ($this->object instanceof Arrayable) {
-            $array = $this->object->toArray();
-        } else {
-            $array = collect($this->object->getPresentableKeys())->mapWithKeys(function ($keyName, $key) {
-                return [$keyName => $this->object->{$keyName}];
-            })->toArray();
-        }
-
-        return $array;
+        return ($this->object instanceof Arrayable) ? $this->object->toArray() : [];
     }
 
     /**
-     * Is the decorated entity available.
+     * Convert the object to its JSON representation.
      *
-     * When dealing with relationships in models, we only want to deal with their
-     * presented objects within other presenters.
-     *
-     * @param  string $key
-     * @return boolean
+     * @param  int  $options
+     * @return string
      */
-    protected function decoratedRelationLoaded($key)
+    public function toJson($options = 0)
     {
-        if ($this->object->relationLoaded($key)) {
-            return ($this->object->getRelation($key) instanceof self);
-        }
-
-        return false;
+        return json_encode($this->toArray(), $options);
     }
 }
