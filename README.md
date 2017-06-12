@@ -1,5 +1,5 @@
-# DEPOT
+# Presenter
 
-Laravel repository and criteria.
+Laravel presenter package.
 
-**NB.** I am currently pulling this package out of a full application meaning tests, documentation and some features are unavailable at this time.
+**NB.** In development and not stable.
