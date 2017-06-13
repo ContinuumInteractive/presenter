@@ -2,9 +2,9 @@
 
 namespace Continuum\Presenter;
 
-use ArrayAccess;
 use Illuminate\Support\Collection;
 use Continuum\Presenter\Presentable;
+use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 
 class Presenter
@@ -82,7 +82,7 @@ class Presenter
      */
     protected function isArray($item): bool
     {
-        return is_array($item) || $item instanceof Collection;
+        return is_array($item) || $item instanceof Collection || $item instanceof AbstractPaginator;
     }
 
     /**
